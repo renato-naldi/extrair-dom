@@ -1,10 +1,7 @@
 import re
 import tempfile
 
-import pymupdf as fitz
 import streamlit as st
-
-import extrai_v3
 
 st.set_page_config(
     page_title="Buscar Processo - Diário Oficial de Taubaté",
@@ -22,6 +19,16 @@ if "resultado" not in st.session_state:
 
 
 def executar_busca(processo, modo, dias):
+
+    # Importados aqui (e não no topo) para a tela aparecer primeiro e
+    # qualquer falha de importação ser exibida em vez de deixar a página em branco.
+    try:
+        import pymupdf as fitz
+        import extrai_v3
+    except Exception as erro:
+        st.session_state.resultado = None
+        st.session_state.erro = f"Falha ao carregar os módulos: {erro!r}"
+        return
 
     linhas = []
 
